@@ -1,5 +1,7 @@
+from src.carlo import main as carlo_main
+
 def main():
-    print("Hello from pennies-game!")
+    carlo_main(num_simulations=100)
 
 
 if __name__ == "__main__":
