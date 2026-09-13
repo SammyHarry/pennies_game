@@ -1,33 +1,36 @@
+import time
+
 import numpy as np
+import struct
 
 class Deck:
-    def __init__(self):
-        self.cards = self._generate_deck()
+    def __init__(self, num_decks: int = 1):
+        self.cards = self._generate_deck(num_decks)
 
-    def _generate_deck(self):
-        suits = ['R', 'B'] * 26  # 26 red and 26 black cards 
-        return [(suit) for suit in suits]
+    def _generate_deck(self, num_decks: int):
+        shape = (52, num_decks)
+        grid = np.zeros(shape, dtype=int)
+        grid[::2,] = 1
+        self.decks = grid
+        return self.decks
 
     def shuffle(self):
-        np.random.shuffle(self.cards)
+        rng = np.random.default_rng()
 
-    def deal(self, num_cards):
-        if num_cards > len(self.cards):
-            raise ValueError("Not enough cards in the deck to deal.")
-        dealt_cards = self.cards[:num_cards]
-        self.cards = self.cards[num_cards:]
-        return dealt_cards
+        self.decks = rng.permuted(self.decks, axis=0)
+        return self.decks
 
+    def save_decks(self, filename: str):
+        np.savez_compressed(filename, decks=self.decks)
 
 
-def main():
-    deck = Deck()
-    print("Initial deck:", deck.cards)
+
+
+def main(num_decks: int = 100):
+    deck = Deck(num_decks=num_decks)
     deck.shuffle()
-    print("Shuffled deck:", deck.cards)
-    dealt_cards = deck.deal(1)
-    print("Dealt cards:", dealt_cards)
-    print("Remaining deck:", deck.cards)
+    deck.save_decks(f"data/decks_{num_decks}_{time.ctime()}.npz")
+
 
 if __name__ == '__main__':
     main()
