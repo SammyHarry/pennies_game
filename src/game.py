@@ -1,4 +1,3 @@
-import numpy as np
 import src.deck as deck
 
 class Game:
@@ -26,15 +25,16 @@ class Game:
         
         self.reset()
 
-        while len(self.deck.cards) > 0:
-
-            self.current.append(*self.deck.deal(1))
-            if self.current[-3:] == self.p1:
+        for card in self.deck.decks[:, 0]:
+            self.current.append('R' if card == 1 else 'B')
+            window = self.current[-3:]
+            if window == self.p1:
                 self.score[0] += self.score_game()
                 self.current = [] 
-            elif self.current[-3:] == self.p2:
+            elif window == self.p2:
                 self.score[1] += self.score_game()
                 self.current = []
+        self.deck.decks = self.deck.decks[:0]
         if self.score[0] > self.score[1]:
             self.winner[0] += 1
         elif self.score[1] > self.score[0]:

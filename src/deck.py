@@ -5,9 +5,18 @@ import numpy as np
 
 class Deck:
     def __init__(self, num_decks: int = 1):
-        self.cards = self._generate_deck(num_decks)
+        self.decks = self._generate_deck(num_decks)
         self.PATH_SEED_LOG = Path('data/seed_log.json')
         self.PATH_DECK_LOG = Path('data/deck_log.json')
+
+    @property
+    def cards(self):
+        """Keep the legacy name pointing to the current deck array."""
+        return self.decks
+
+    @cards.setter
+    def cards(self, cards):
+        self.decks = cards
 
     def _generate_deck(self, num_decks: int):
         shape = (52, num_decks)
