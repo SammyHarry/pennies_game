@@ -52,7 +52,7 @@ class Deck:
 def main(num_decks: int = 100):
     deck = Deck(num_decks=num_decks)
     deck.shuffle()
-    deck.save_decks(f"data/decks_{num_decks}_{time.ctime()}_seed_{deck.seed}.npz")
+    deck.save_decks(f"data/decks_{num_decks}_seed_{deck.seed}.npz")
 
 
 if __name__ == '__main__':
