@@ -1,6 +1,6 @@
 import json
 import time
-from matplotlib.path import Path
+from pathlib import Path
 import numpy as np
 
 class Deck:
@@ -17,9 +17,9 @@ class Deck:
         return self.decks
 
     def shuffle(self):
-        rng = np.random.default_rng()
+        rng = np.random.default_rng(seed=self.get_next_seed())
 
-        self.decks = rng.permuted(self.decks, axis=0, seed=self.get_next_seed())
+        self.decks = rng.permuted(self.decks, axis=0)
         return self.decks
 
     def save_decks(self, filename: str):
