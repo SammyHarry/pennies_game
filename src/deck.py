@@ -44,15 +44,3 @@ class Deck:
         with self.PATH_SEED_LOG.open('w') as f:
                 json.dump(seed_log, f)
         return self.seed
-
-
-
-
-def main(num_decks: int = 100):
-    deck = Deck(num_decks=num_decks)
-    deck.shuffle()
-    deck.save_decks(f"data/decks_{num_decks}_seed_{deck.seed}.npz")
-
-
-if __name__ == '__main__':
-    main()

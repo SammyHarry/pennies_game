@@ -1,48 +1,38 @@
-import numpy as np
-import pandas as pd
+from pathlib import Path
+
 import seaborn as sb
 import matplotlib.pyplot as plt
 
-def make_heatmaps(trick_matrix, card_matrix, difference_matrix):
 
-    fig, axes = plt.subplots(1, 3, figsize=(24, 7))
+def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
+                  trick_labels, card_labels, num_simulations):
+    fig, axes = plt.subplots(1, 3, figsize=(24, 8))
 
-    sb.heatmap(
-        trick_matrix,
-        annot=True,
-        fmt=".3f",
-        vmin=0,
-        vmax=1,
-        ax=axes[0],
-    )
-    axes[0].set_title("Trick Scoring")
-
-    sb.heatmap(
-        card_matrix,
-        annot=True,
-        fmt=".3f",
-        vmin=0,
-        vmax=1,
-        ax=axes[1],
-    )
-    axes[1].set_title("Card Scoring")
+    for ax, matrix, labels, mode in (
+        (axes[0], trick_matrix, trick_labels, 'Tricks'),
+        (axes[1], card_matrix, card_labels, 'Cards'),
+    ):
+        sb.heatmap(
+            matrix, annot=labels, fmt='', cmap='Blues',
+            vmin=0, vmax=1, cbar=False, square=True,
+            linewidths=0.5, linecolor='white', ax=ax,
+        )
+        ax.set_title(f'My Probability of Win(Tie)\nScoring By {mode}\nN={num_simulations:,}')
 
     sb.heatmap(
-        difference_matrix,
-        annot=True,
-        fmt=".3f",
-        center=0,
-        vmin=-.2,
-        vmax=.2,
-        cmap="coolwarm",
-        ax=axes[2],
+        difference_matrix, annot=True, fmt='.3f', center=0,
+        vmin=-.2, vmax=.2, cmap='coolwarm', square=True,
+        linewidths=0.5, linecolor='white', ax=axes[2],
     )
-    axes[2].set_title("Trick − Card")
+    axes[2].set_title('Trick - Card Win Probability')
 
-    fig.savefig('figures/simulation_results.png', dpi=300)
+    for ax in axes:
+        ax.set_facecolor('lightgray')
+        ax.set_xlabel('My Choice')
+        ax.set_ylabel('Opponent Choice')
+        ax.tick_params(axis='both', labelrotation=0)
 
-    # Close the figure after saving.
+    Path('figures').mkdir(exist_ok=True)
+    fig.tight_layout()
+    fig.savefig('figures/simulation_results.png', dpi=300, bbox_inches='tight')
     plt.close(fig)
-
-    return None
-
