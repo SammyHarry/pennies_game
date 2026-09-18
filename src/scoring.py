@@ -3,9 +3,8 @@ import numpy as np
 
 
 class scoring:
-
-
     def __init__(self):
+        # Wins, ties, tricks per deck, and cards per trick.
         self.score = np.zeros((8, 8, 4))
         self.strategies = [
             ['R', 'R', 'R'], ['B', 'B', 'B'],
@@ -30,8 +29,10 @@ class scoring:
 
         return self.score
 
-    def _prepare_decks(self, decks):
-        cards = np.asarray(decks.decks if isinstance(decks, Deck) else decks)
+    def _prepare_decks(self, decks):  #essentially converts the decks to a 2D numpy array of 0s and 1s
+        if isinstance(decks, Deck):
+            decks = decks.decks
+        cards = np.asarray(decks)
         if cards.ndim == 1:
             cards = cards[:, None]
         if cards.ndim != 2 or 0 in cards.shape:
@@ -41,11 +42,11 @@ class scoring:
         return cards
 
     def _strategy_codes(self):
-        strategies = [
-            tuple(1 if card == 'R' else 0 for card in strategy)
-            for strategy in self.strategies
-        ]
-        return [4 * p[0] + 2 * p[1] + p[2] for p in strategies]
+        codes = []
+        for first, second, third in self.strategies:
+            code = 4 * (first == 'R') + 2 * (second == 'R') + (third == 'R')
+            codes.append(code)
+        return codes
 
     def _find_patterns(self, cards):
         patterns = np.zeros(cards.shape, dtype=np.int8)
@@ -77,9 +78,12 @@ class scoring:
         ties = np.count_nonzero(points[0] == points[1])
         for player, row, column in ((0, i, j), (1, j, i)):
             total_tricks = tricks[player].sum()
+            cards_per_trick = 0
+            if total_tricks:
+                cards_per_trick = captured[player].sum() / total_tricks
             self.score[row, column] = [
                 np.count_nonzero(points[player] > points[1 - player]),
                 ties,
                 total_tricks / num_decks,
-                captured[player].sum() / total_tricks if total_tricks else 0,
+                cards_per_trick,
             ]
