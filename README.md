@@ -62,7 +62,7 @@ python -c "from main import main; main(num_simulations=10000)"
 
 The output is `figures/simulation_results.png`, containing trick-scoring, card-scoring, and difference heatmaps. Running the program again overwrites that image.
 
-In the first two heatmaps, rows are Player 1's choice ("Opponent Choice") and columns are Player 2's choice ("My Choice"). A cell labeled `80(8)` means Player 2 won approximately 80% of games and tied approximately 8%. Blue shading represents win probability. Gray diagonal cells exclude identical choices. The third heatmap shows trick win probability minus card win probability; a negative value means the card-scoring win probability is higher.
+In the first two heatmaps, rows are Player 1's choice ("Opponent Choice") and columns are Player 2's choice ("My Choice"). A cell labeled `80(8)` means Player 2 won approximately 80% of games and tied approximately 8%. Blue shading represents win probability. A black border marks the best response in each row: the choice with the highest unrounded win probability, including all choices tied for best. Gray diagonal cells exclude identical choices. The third heatmap shows trick win probability minus card win probability; a negative value means the card-scoring win probability is higher.
 
 ## Findings
 
@@ -107,4 +107,3 @@ for mode in ('trick', 'cards'):
               'win:', scores[j, i, 0] / decks.shape[1],
               'tie:', scores[i, j, 1] / decks.shape[1])
 ```
-
