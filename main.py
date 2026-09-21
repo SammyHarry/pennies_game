@@ -6,4 +6,6 @@ def main(num_simulations: int = 1_000_000) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    from src.main_input import main as input_main
+
+    input_main()

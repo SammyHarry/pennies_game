@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -35,14 +37,19 @@ def all_carlo_simulations(
     num_simulations: int = 10000, scoring: str = 'trick',
 ) -> dict:
     scorer = _run_simulations(num_simulations, scoring)
+    return _scores_to_results(scorer.score, num_simulations)
+
+
+def _scores_to_results(scores: np.ndarray, num_simulations: int) -> dict:
+    strategies = Scoring().strategies
     results = {}
-    for i, p1 in enumerate(scorer.strategies):
-        for j, p2 in enumerate(scorer.strategies):
+    for i, p1 in enumerate(strategies):
+        for j, p2 in enumerate(strategies):
             if i == j:
                 continue
             key = (tuple(p1), tuple(p2))
             results[key] = _pair_probabilities(
-                scorer.score, i, j, num_simulations
+                scores, i, j, num_simulations
             )
     return results
 
@@ -73,8 +80,35 @@ def results_to_labels(results: dict) -> pd.DataFrame:
 
 
 def main(num_simulations: int = 1_000_000) -> None:
-    trick_results = all_carlo_simulations(num_simulations, scoring='trick')
-    card_results = all_carlo_simulations(num_simulations, scoring='cards')
+    totals_path = Path('data/totals.npz')
+    total_decks = 0
+    trick_counts = np.zeros((8, 8, 2), dtype=np.int64)
+    card_counts = np.zeros((8, 8, 2), dtype=np.int64)
+    if totals_path.exists():
+        with np.load(totals_path, allow_pickle=False) as totals:
+            total_decks = int(totals['total_decks'])
+            trick_counts = totals['trick_counts']
+            card_counts = totals['card_counts']
+
+    # Only wins and ties are additive; the other score fields are averages.
+    trick_counts = trick_counts + _run_simulations(
+        num_simulations, scoring='trick',
+    ).score[:, :, :2].astype(np.int64)
+    card_counts = card_counts + _run_simulations(
+        num_simulations, scoring='cards',
+    ).score[:, :, :2].astype(np.int64)
+    total_decks += num_simulations
+
+    # Replace saved totals only after both modes finish and writing succeeds.
+    pending_path = totals_path.with_name('totals.pending.npz')
+    np.savez_compressed(
+        pending_path, total_decks=total_decks,
+        trick_counts=trick_counts, card_counts=card_counts,
+    )
+    pending_path.replace(totals_path)
+
+    trick_results = _scores_to_results(trick_counts, total_decks)
+    card_results = _scores_to_results(card_counts, total_decks)
 
     trick_matrix = results_to_matrix(trick_results)
     card_matrix = results_to_matrix(card_results)
@@ -83,7 +117,7 @@ def main(num_simulations: int = 1_000_000) -> None:
     figure.make_heatmaps(
         trick_matrix, card_matrix, difference_matrix,
         results_to_labels(trick_results), results_to_labels(card_results),
-        num_simulations,
+        total_decks,
     )
 
 
