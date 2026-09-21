@@ -2,6 +2,7 @@ from pathlib import Path
 
 import seaborn as sb
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 
 def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
@@ -17,6 +18,12 @@ def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
             vmin=0, vmax=1, cbar=False, square=True,
             linewidths=0.5, linecolor='white', ax=ax,
         )
+        best_responses = matrix.eq(matrix.max(axis=1), axis=0)
+        for row, column in zip(*best_responses.to_numpy().nonzero()):
+            ax.add_patch(Rectangle(
+                (column, row), 1, 1, fill=False,
+                edgecolor='black', linewidth=2.5, clip_on=False,
+            ))
         ax.set_title(f'My Probability of Win(Tie)\nScoring By {mode}\nN={num_simulations:,}')
 
     sb.heatmap(
