@@ -17,7 +17,7 @@ def main() -> None:
         break
     print('Simulation Complete!')
     while True:
-        response = input('Would you like to see the Heat Map? (y/n)')
+        response = input('Would you like to see the Heat Map? (y/n)').lower()
         if response == 'yes' or response == 'y':
             subprocess.run('start "" "figures/simulation_results.png"', shell=True)
             break
