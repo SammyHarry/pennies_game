@@ -7,7 +7,7 @@ from matplotlib.patches import Rectangle
 
 def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
                   trick_labels, card_labels, num_simulations):
-    fig, axes = plt.subplots(1, 3, figsize=(24, 8))
+    fig, axes = plt.subplots(1, 2, figsize=(16,8))
 
     for ax, matrix, labels, mode in (
         (axes[0], trick_matrix, trick_labels, 'Tricks'),
@@ -25,13 +25,6 @@ def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
                 edgecolor='black', linewidth=2.5, clip_on=False,
             ))
         ax.set_title(f'My Probability of Win(Tie)\nScoring By {mode}\nN={num_simulations:,}')
-
-    sb.heatmap(
-        difference_matrix, annot=True, fmt='.3f', center=0,
-        vmin=-.2, vmax=.2, cmap='coolwarm', square=True,
-        linewidths=0.5, linecolor='white', ax=axes[2],
-    )
-    axes[2].set_title('Trick - Card Win Probability')
 
     for ax in axes:
         ax.set_facecolor('lightgray')
