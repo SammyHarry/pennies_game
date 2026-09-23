@@ -38,9 +38,9 @@ uv sync
 uv run python main.py
 ```
 
-The default run simulates 1,000,000 decks for each scoring rule. It saves the shuffled decks in `data/` and saves the heatmaps to `figures/simulation_results.png`. Running the program again creates a new simulation and replaces the previous heatmap.
+Once ran, the CLI will ask you how many decks you would like to simulate. We recommend that for your first run, you  simulate 1,000,000 decks, so the law of large numbers will apply. This should take around 2 minutes or so. After this you will be prompted to  take a look at the HeatMap created (can also be found in`figures/simulation_results.png`). Running the program additional times adds to number of overall simulations and updates  the previous heatmap with the new data .
 
-In the first two heatmaps, rows are the opponent's choice and columns are my choice. A label such as `80(8)` means that Player 2 won approximately 80% of the games and tied approximately 8% of them. Darker blue represents a higher win probability. A black border marks the best response for that opponent's choice. Gray diagonal cells are invalid because both players cannot choose the same sequence.
+In the  two heatmaps, rows are the opponent's choice and columns are my choice. A label such as `80(8)` means that Player 2 won approximately 80% of the games and tied approximately 8% of them. Darker blue represents a higher win probability. A black border marks the best response for that opponent's choice. Gray diagonal cells are invalid because both players cannot choose the same sequence.
 
 ## Findings
 
