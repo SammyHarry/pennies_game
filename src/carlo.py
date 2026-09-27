@@ -62,7 +62,6 @@ def results_to_matrix(results: dict, outcome: int = 0) -> pd.DataFrame:
     probabilities.index = probabilities.index.set_names(
         ['P1 Strategy', 'P2 Strategy']
     )
-    # P2 is "My Choice"; the values are P2's win probabilities.
     return probabilities.unstack('P2 Strategy')
 
 
