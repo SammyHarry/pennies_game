@@ -49,3 +49,17 @@ For the standard H-N game, the strategy generally follows this rule: take the op
 Ron's variation produces a small change in the optimal response. For `RBR` and its color-swapped equivalent, `BRB`, the best response changes from `RRB` or `BBR` under trick scoring to `BBR` or `RRB` under card scoring, respectively.
 
 Across both scoring rules, Player 1's strongest opening choices are `BRB` and `RBR`. Player 2 still has an advantage after seeing Player 1's choice, but the best response depends on the opening sequence and on whether the game is scored by tricks or by cards. These results come from simulation, so the percentages are estimates rather than exact probabilities.
+
+## Stretch Goal: Why the Strategies Differ
+
+We also tried a numerical-analysis-style approach to this question, but the clearest explanation came from looking at the behavior of the specific strategy matchups. The difference in optimal strategies is concentrated around the `RBR` case and its color-swapped equivalent, `BRB`. These are the cases where the best response and the second-best response are close enough that changing the scoring rule can change which strategy is optimal.
+
+Under trick scoring, the optimal responses mirror the usual Penney's Game strategy because only the number of tricks won matters. Under Ron's variation, however, the number of cards won in each trick also matters. This changes the comparison between `BBR` and `RRB` as responses to `RBR`.
+
+For most opponent choices, there is one clear best response, so switching from trick scoring to card scoring does not change the optimal strategy. The `RBR` case is different because `BBR` and `RRB` are close competitors.
+
+The main question is why `BBR` becomes better than `RRB` against `RBR` under Ron's variation. The answer appears to involve score variance. `RRB` can have a larger average margin when it wins tricks, but the goal is not to maximize the average score difference. The goal is to maximize the number of games won. In Ron's variation, the `BBR` matchup appears to have smaller score variance, which means fewer games move into extreme win/loss outcomes. This leads to fewer losing games overall.
+
+One way to formalize this would be to compute variance using `E(X^2) - E(X)^2`, but we can also reason about the game structure. In the `BBR` versus `RBR` matchup, a `BBR` win tends to leave more red cards in the remaining deck. That increases the chance that `RBR` wins next. When `RBR` wins, it tends to leave more black cards, increasing the chance that `BBR` wins afterward. This creates a negative feedback loop that pulls the deck back toward a more balanced red/black state. Since a balanced deck has relatively shorter expected trick lengths, this reduces the size of extreme outcomes. Even so, `BBR` still benefits under Ron's variation because its average winning trick length remains slightly longer than `RBR`'s.
+
+The `RRB` versus `RBR` matchup behaves differently. It creates more of a positive feedback loop, where wins can increase the number of black cards left in the deck unless a large `BBB` sequence occurs. This does not necessarily increase either strategy's chance of winning the next trick, but it can increase the size of later wins and losses. As a result, the score difference becomes more variable. Even though `RRB` has advantages under trick scoring, the larger variance in Ron's variation pushes more games into the tails and leads to a slightly lower overall game win probability.
