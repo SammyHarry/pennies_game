@@ -2,11 +2,15 @@ from pathlib import Path
 
 import seaborn as sb
 import matplotlib.pyplot as plt
+import pandas as pd
 from matplotlib.patches import Rectangle
 
 
-def make_heatmaps(trick_matrix, card_matrix, difference_matrix,
-                  trick_labels, card_labels, num_simulations):
+def make_heatmaps(
+    trick_matrix: pd.DataFrame, card_matrix: pd.DataFrame,
+    difference_matrix: pd.DataFrame, trick_labels: pd.DataFrame,
+    card_labels: pd.DataFrame, num_simulations: int,
+) -> None:
     fig, axes = plt.subplots(1, 2, figsize=(16,8))
 
     for ax, matrix, labels, mode in (

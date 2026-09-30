@@ -3,32 +3,33 @@ import time
 from pathlib import Path
 import numpy as np
 
+
 class Deck:
-    def __init__(self, num_decks: int = 1):
+    def __init__(self, num_decks: int = 1) -> None:
         self.decks = self._generate_deck(num_decks)
         self.PATH_SEED_LOG = Path('data/seed_log.json')
 
-    def _generate_deck(self, num_decks: int):
+    def _generate_deck(self, num_decks: int) -> np.ndarray:
         shape = (52, num_decks)
         grid = np.zeros(shape, dtype=int)
         grid[::2,] = 1
         self.decks = grid
         return self.decks
 
-    def shuffle(self):
+    def shuffle(self) -> np.ndarray:
         rng = np.random.default_rng(seed=self.get_next_seed())
 
         self.decks = rng.permuted(self.decks, axis=0)
         return self.decks
 
-    def save_decks(self, filename: str):
+    def save_decks(self, filename: str) -> None:
         np.savez_compressed(filename, decks=self.decks)
 
     def get_next_seed(self) -> int:
-        #make sure parent dir exists
+        # make sure parent dir exists
         self.PATH_SEED_LOG.parent.mkdir(parents=True, exist_ok=True)
 
-        #determine next seed
+        # determine next seed
         if not self.PATH_SEED_LOG.exists():
             print(f'NO seed found stat w {0}')
             self.seed = 0

@@ -3,7 +3,7 @@ import numpy as np
 
 
 class scoring:
-    def __init__(self):
+    def __init__(self) -> None:
         # Wins, ties, tricks per deck, and cards per trick.
         self.score = np.zeros((8, 8, 4))
         self.strategies = [
@@ -13,7 +13,7 @@ class scoring:
             ['R', 'B', 'R'], ['B', 'R', 'B'],
         ]
 
-    def play(self, decks: Deck | np.ndarray, scoring: str = 'trick'):
+    def play(self, decks: Deck | np.ndarray, scoring: str = 'trick') -> np.ndarray:
         if scoring not in ('trick', 'cards'):
             raise ValueError("Scoring must be 'trick' or 'cards'.")
 
@@ -29,7 +29,7 @@ class scoring:
 
         return self.score
 
-    def _prepare_decks(self, decks):  #essentially converts the decks to a 2D numpy array of 0s and 1s
+    def _prepare_decks(self, decks: Deck | np.ndarray) -> np.ndarray:
         if isinstance(decks, Deck):
             decks = decks.decks
         cards = np.asarray(decks)
@@ -41,20 +41,22 @@ class scoring:
             raise ValueError('Cards must be 0 (B) or 1 (R).')
         return cards
 
-    def _strategy_codes(self):
+    def _strategy_codes(self) -> list[int]:
         codes = []
         for first, second, third in self.strategies:
             code = 4 * (first == 'R') + 2 * (second == 'R') + (third == 'R')
             codes.append(code)
         return codes
 
-    def _find_patterns(self, cards):
+    def _find_patterns(self, cards: np.ndarray) -> np.ndarray:
         patterns = np.zeros(cards.shape, dtype=np.int8)
         if cards.shape[0] >= 3:
             patterns[2:] = 4 * cards[:-2] + 2 * cards[1:-1] + cards[2:]
         return patterns
 
-    def _play_pair(self, patterns, codes):
+    def _play_pair(
+        self, patterns: np.ndarray, codes: tuple[int, int],
+    ) -> tuple[np.ndarray, np.ndarray]:
         num_decks = patterns.shape[1]
         tricks = np.zeros((2, num_decks), dtype=np.int64)
         captured = np.zeros((2, num_decks), dtype=np.int64)
@@ -72,7 +74,10 @@ class scoring:
 
         return tricks, captured
 
-    def _record_results(self, i, j, tricks, captured, scoring):
+    def _record_results(
+        self, i: int, j: int, tricks: np.ndarray,
+        captured: np.ndarray, scoring: str,
+    ) -> None:
         num_decks = tricks.shape[1]
         points = tricks if scoring == 'trick' else captured
         ties = np.count_nonzero(points[0] == points[1])

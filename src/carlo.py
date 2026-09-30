@@ -26,7 +26,7 @@ def _run_simulations(num_simulations: int, scoring: str) -> Scoring:
 
 def _pair_probabilities(
     scores: np.ndarray, i: int, j: int, num_simulations: int,
-):
+) -> tuple[float, float]:
     p2_wins = scores[j, i, 0]
     ties = scores[i, j, 1]
     decisive_games = num_simulations
